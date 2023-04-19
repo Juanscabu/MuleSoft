@@ -12,11 +12,6 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 		<set-variable value="#[message.attributes.queryParams.code]" doc:name="code" doc:id="82200fbe-d74e-44c9-bd83-93c9cb05131d" variableName="code"/>
 	</sub-flow>
 	<flow name="getFlights" doc:id="1c93b403-0ee0-4ada-b328-90938a1f5d2e" >
-		<http:listener doc:name="GET /flights" doc:id="c12fab89-36ad-4840-9eeb-79db3182ce06" config-ref="HTTP_Listener_config" path="/flights" >
-			<http:error-response statusCode="#[vars.httpStatus default 200]">
-				<http:body ><![CDATA[#[payload]]]></http:body>
-			</http:error-response>
-		</http:listener>
 		<set-variable value="#[message.attributes.queryParams.airline]" doc:name="airline" doc:id="e2cedea8-30a8-4ccc-a46b-aa9d16550d22" variableName="airline"/>
 		<flow-ref doc:name="setCode" doc:id="0086defe-4314-4a76-92c8-9a5dcb8b012e" name="setCode"/>
 		<validation:is-true doc:name="Is valid destination" doc:id="de03cb40-0ff5-4836-bf42-5d8c56183636" message="#[['SFO','LAX','CLE','PDX','PDF'] contains vars.code]">
@@ -126,7 +121,7 @@ output application/java
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger" doc:id="5c404679-94da-4af0-a9b4-7e5f3b353ad0" />
 		<error-handler >
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="186d3c10-8ca6-45e2-b921-d5a298d57cc7" type="AMERICAN-FLIGHTS-API:BAD_REQUEST">
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="186d3c10-8ca6-45e2-b921-d5a298d57cc7" type="AMERICAN-FLIGHTS-API:BAD_REQUEST">
 				<ee:transform doc:name="No flights" doc:id="4f64a9d7-4e02-4aeb-aba3-e3c8fce9649e">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
@@ -138,7 +133,7 @@ output application/json
 					</ee:message>
 				</ee:transform>
 				<set-variable value="200" doc:name="httpStatus" doc:id="921635e7-8eb4-48b9-b256-9d12a4fedf68" variableName="httpStatus" />
-			</on-error-propagate>
+			</on-error-continue>
 		</error-handler>
 	
 </flow>

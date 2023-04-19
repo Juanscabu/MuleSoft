@@ -22,6 +22,19 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</wsc:config>
 	<configuration doc:name="Configuration" doc:id="5db1667b-89aa-4e44-8451-bcd446b5a7c2" defaultErrorHandler-ref="globalError_Handler" />
 	<error-handler name="globalError_Handler" doc:id="be62bae4-c3b1-4551-9150-7f2d65969e3d" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="578ac97a-5ab1-4a93-b164-639a7e21db77" type="APP:INVALID_DESTINATION">
+				<ee:transform doc:name="error.description" doc:id="29bb8209-3d63-43a1-a0d4-b82b019a55ff" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: error.description
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<set-variable value="400" doc:name="httpStatus" doc:id="277d625e-c585-45ce-add0-89cc701e0e46" variableName="httpStatus"/>
+		</on-error-continue>
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="35280a89-17de-42ff-8848-15c7d6e712fd" type="ANY">
 			<ee:transform doc:name="error.description" doc:id="8d6b8fd8-b693-4f7b-b58e-33253cc5dd81">
 				<ee:message>
